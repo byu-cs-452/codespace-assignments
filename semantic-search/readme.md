@@ -27,11 +27,10 @@ source .venv/bin/activate
 
 ```bash
 cd semantic-search
-chmod +x download_data.sh
-./download_data.sh
+python download_data.py
 ```
 
-This downloads ~500MB of podcast data and embeddings from Google Drive.
+This downloads ~550MB of podcast data and embeddings.
 
 ### 4. Verify Database Connection
 
@@ -114,7 +113,7 @@ embedding <+> other_embedding  -- L1 distance
 
 ## Data Files
 
-After running `download_data.sh`, you'll have:
+After running `download_data.py`, you'll have:
 
 ```
 data/
@@ -177,7 +176,7 @@ The `utils.py` file provides helper functions to connect automatically.
 | `db_query.py` | Write semantic search queries |
 | `utils.py` | Helper functions (provided) |
 | `db_check.py` | Verify environment setup |
-| `download_data.sh` | Download dataset from Google Drive |
+| `download_data.py` | Download dataset |
 
 ## Deliverables
 
@@ -207,7 +206,7 @@ Submit a ZIP or PDF containing:
 ## Troubleshooting
 
 ### "Data directory not found"
-Run `./download_data.sh` to download the dataset.
+Run `python download_data.py` to download the dataset.
 
 ### Database won't connect
 ```bash
