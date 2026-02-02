@@ -17,11 +17,11 @@ __pycache__/
 .vscode/
 *.code-workspace
 
-# Data files (students will download their own)
+# Data files (students download their own via download_data.sh)
+semantic-search/data/
 *.csv
-*.json
-*.parquet
-data/
+*.jsonl
+*.zip
 
 # OS files
 .DS_Store

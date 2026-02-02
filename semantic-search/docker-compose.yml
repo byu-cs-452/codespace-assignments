@@ -13,7 +13,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U student -d vectordb"]
+      test: [ "CMD-SHELL", "pg_isready -U student -d vectordb" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,7 +27,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    network_mode: service:db
+    environment:
+      # Database connection for Python scripts
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: vectordb
+      DB_USER: student
+      DB_PASSWORD: vector_lab_2024
 
 volumes:
   postgres_data:

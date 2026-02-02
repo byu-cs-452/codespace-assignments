@@ -1,0 +1,23 @@
+# Core dependencies
+psycopg2-binary==2.9.9
+pandas==2.2.0
+pgvector==0.2.5
+numpy==1.26.3
+
+# Data loading
+datasets==2.20.0
+pgcopy==1.6.0
+
+# Environment management
+python-dotenv==1.0.1
+
+# Optional: Jupyter support for interactive exploration
+jupyter==1.0.0
+ipykernel==6.29.0
+
+# Optional: Progress bars for data loading
+tqdm==4.66.1
+
+# HTTP requests for data download
+requests==2.31.0
+gdown==5.1.0

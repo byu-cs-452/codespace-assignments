@@ -1,0 +1,37 @@
+{
+    "name": "CS-452 Semantic Search Environment",
+    "dockerComposeFile": "../semantic-search/docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspace",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "mtxr.sqltools",
+                "mtxr.sqltools-driver-pg",
+                "ms-toolsai.jupyter"
+            ],
+            "settings": {
+                "python.defaultInterpreterPath": "/workspace/.venv/bin/python",
+                "python.terminal.activateEnvironment": true,
+                "sqltools.connections": [
+                    {
+                        "name": "VectorDB",
+                        "driver": "PostgreSQL",
+                        "server": "localhost",
+                        "port": 5432,
+                        "database": "vectordb",
+                        "username": "student",
+                        "password": "vector_lab_2024"
+                    }
+                ]
+            }
+        }
+    },
+    "postCreateCommand": "bash -c 'cd /workspace && python3 -m venv .venv && source .venv/bin/activate && pip install --upgrade pip && pip install -r semantic-search/requirements.txt && echo \"\" && echo \"✅ Environment ready! Run: source .venv/bin/activate\" && echo \"\"'",
+    "forwardPorts": [
+        5432
+    ],
+    "remoteUser": "vscode"
+}

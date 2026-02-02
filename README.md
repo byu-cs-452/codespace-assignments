@@ -1,6 +1,6 @@
 # CS-452 Codespace Assignments
 
-This repository contains GitHub Codespace-ready assignments for BYU CS-452 Data Engineering.
+This repository contains GitHub Codespace-ready assignments for BYU CS-452 Data Engineering. Each assignment provides a **fully configured development environment** that runs in the cloud—no local setup required.
 
 ## Getting Started
 
@@ -11,23 +11,55 @@ This repository contains GitHub Codespace-ready assignments for BYU CS-452 Data 
 
 ## Assignments
 
-### Assignment 1: Vector Search with pgvector
-**Folder**: `assignment1-vector-search/`
+| Assignment | Description |
+|------------|-------------|
+| [semantic-search](./semantic-search/) | Build a podcast recommender system using pgvector and semantic search |
 
-Learn to perform ETL on datasets and implement semantic search using Postgres with pgvector extension.
+## GitHub Codespaces Free Tier
 
-[See assignment README](./assignment1-vector-search/README.md)
+GitHub provides **free Codespace hours** each month:
+
+| Account Type | Free Hours/Month | Free Storage |
+|--------------|------------------|--------------|
+| **Free (no Student Pack)** | 60 hours | 15 GB |
+| **GitHub Pro / Student Developer Pack** | 180 hours | 20 GB |
+
+### Tips to Maximize Free Hours:
+- ⏸️ **Stop your Codespace** when not in use (it auto-stops after 30 min idle)
+- 🗑️ **Delete old Codespaces** you no longer need
+- ⚡ **Use the 2-core machine** (default) to stretch your hours further
+
+### Get More Free Hours
+If you haven't already, sign up for the **GitHub Student Developer Pack**:
+1. Go to [education.github.com/pack](https://education.github.com/pack)
+2. Verify your `.edu` email
+3. Get **180 hours/month** (3x the free tier!) plus tons of other benefits
 
 ## How Codespaces Work
 
 - Each Codespace is a **full VS Code environment** running in the cloud
-- Your code is **automatically saved** to GitHub
+- Your code is **saved in the Codespace**, commit & push to save to GitHub
 - You can **stop/start** your Codespace to save compute hours
-- Free tier: 60 hours/month for students (with GitHub Student Developer Pack)
+- The environment includes **Postgres with pgvector** pre-configured
 
-## Support
+## Troubleshooting
 
-If you encounter issues:
-1. Check the assignment's README for troubleshooting
-2. Try rebuilding the container: `Cmd/Ctrl + Shift + P` → "Rebuild Container"
-3. Post on the class discussion board
+### Codespace won't start
+- Check your [Codespace usage](https://github.com/settings/billing/summary) to ensure you have hours remaining
+- Try creating a new Codespace
+
+### Database issues
+```bash
+# Check if Postgres is running
+docker ps
+
+# Rebuild the container (fixes most issues)
+# Press: Ctrl+Shift+P → "Rebuild Container"
+```
+
+### Need help?
+Post on the class discussion board or attend office hours.
+
+---
+
+**Happy coding! 🚀**
