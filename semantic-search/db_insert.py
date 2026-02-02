@@ -31,6 +31,66 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 # =============================================================================
+# REFERENCE: Sample data structures
+# =============================================================================
+# These are complete examples of what you'll find in the data files.
+# Use these to understand how to extract the fields you need.
+
+# Sample document from batch_request_XX.jsonl:
+SAMPLE_DOCUMENT = """
+{
+  "custom_id": "89:115",
+  "url": "/v1/embeddings",
+  "method": "POST",
+  "body": {
+    "input": " have been possible without these approaches?",
+    "model": "text-embedding-3-large",
+    "dimensions": 128,
+    "metadata": {
+      "title": "Podcast: Boris Sofman: Waymo, Cozmo, Self-Driving Cars, and the Future of Robotics | Lex Fridman Podcast #241",
+      "podcast_id": "U_AREIyd0Fc",
+      "start_time": 484.52,
+      "stop_time": 487.08
+    }
+  }
+}
+"""
+
+# Sample embedding from embedding.jsonl:
+SAMPLE_EMBEDDING = """
+{
+  "id": "batch_req_QZBmHS7FBiVABxcsGiDx2THJ",
+  "custom_id": "89:115",
+  "response": {
+    "status_code": 200,
+    "request_id": "7a55eba082c70aca9e7872d2b694f095",
+    "body": {
+      "object": "list",
+      "data": [
+        {
+          "object": "embedding",
+          "index": 0,
+          "embedding": [
+            0.0035960325,
+            -0.012345678,
+            ... (126 more values) ...
+            -0.093248844
+          ]
+        }
+      ],
+      "model": "text-embedding-3-large",
+      "usage": {
+        "prompt_tokens": 7,
+        "total_tokens": 7
+      }
+    }
+  },
+  "error": null
+}
+"""
+
+
+# =============================================================================
 # STEP 1: Read the embedding files
 # =============================================================================
 # TODO: Read all embedding.jsonl files from the data directory

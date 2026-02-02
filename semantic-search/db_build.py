@@ -26,6 +26,24 @@ CREATE_EXTENSION = "CREATE EXTENSION IF NOT EXISTS vector"
 
 
 # =============================================================================
+# HELPER: Drop tables if you want to start over
+# =============================================================================
+# Run drop_tables() if you need to reset your database and try again
+DROP_TABLES = "DROP TABLE IF EXISTS segment, podcast CASCADE"
+
+def drop_tables():
+    """Drop all tables to start fresh. Useful when debugging."""
+    print("🗑️  Dropping existing tables...")
+    conn = psycopg2.connect(CONNECTION)
+    cursor = conn.cursor()
+    cursor.execute(DROP_TABLES)
+    conn.commit()
+    cursor.close()
+    conn.close()
+    print("   Tables dropped. Run main() to recreate them.")
+
+
+# =============================================================================
 # STEP 2: Create the podcast table
 # =============================================================================
 # TODO: Write the CREATE TABLE statement for the podcast table
