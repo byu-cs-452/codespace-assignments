@@ -4,10 +4,10 @@ Build a podcast recommender system using **pgvector** and semantic search! You'l
 
 ## Learning Objectives
 
-- Understand how vector databases enable semantic search
-- Practice SQL with the pgvector extension  
-- Implement similarity search using L2 distance
-- Work with real-world podcast transcript data
+In this assignment, you'll learn to:
+- Perform ETL (Extract, Transform, Load) on a 500MB dataset
+- Store data in a Postgres database with pgvector extension
+- Implement semantic search using vector embeddings
 
 ## Quick Start
 
@@ -184,6 +184,18 @@ The `utils.py` file provides helper functions to connect automatically.
 Submit a ZIP or PDF containing:
 1. Your completed code files (`db_build.py`, `db_insert.py`, `db_query.py`)
 2. A PDF with the queries and results for Q1-Q6
+
+## Want to Learn More?
+
+📚 **[RELATED_LEARNING.md](./RELATED_LEARNING.md)** — Curious how this Codespace was built? Want to run locally instead? This guide covers:
+
+- How the Codespace environment was created
+- Why local PostgreSQL is faster than cloud databases for this assignment
+- Setting up locally with Docker, TimescaleDB, or Neon
+- Using **uv** for fast Python environment management
+- Links to pgvector, PostgreSQL, and DevOps resources
+
+---
 
 ## Resources
 
