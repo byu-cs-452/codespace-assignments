@@ -2,13 +2,13 @@
 """
 download_data.py - Download the Lex Fridman podcast embeddings dataset.
 
-This script downloads the pre-computed embeddings and batch request files.
-The dataset is approximately 550MB total.
+This script downloads the pre-computed embeddings and batch request files
+from GitHub Releases. The dataset is approximately 615MB total.
+
+Expected download time: 1-3 minutes depending on your connection.
 
 Usage:
     python download_data.py
-
-The script will check for existing data and skip if already downloaded.
 """
 
 import os
@@ -17,45 +17,16 @@ import zipfile
 import requests
 from pathlib import Path
 
-# =============================================================================
-# DATA SOURCE CONFIGURATION
-# =============================================================================
-# Change these URLs if data hosting changes in the future.
-# 
-# Current sources (choose one):
-#   - GitHub Releases: Most reliable for class use
-#   - Google Drive: Original source, may have rate limits
-#   - Kaggle: Requires API key setup
-#
-# To switch sources, update the URLs below.
-
-DATA_SOURCES = {
-    # GitHub Releases (recommended for class use)
-    # Upload files to: https://github.com/byu-cs-452/codespace-assignments/releases
-    "github": {
-        "raw_data": "https://github.com/byu-cs-452/codespace-assignments/releases/download/v1.0/raw_data.zip",
-        "embeddings": "https://github.com/byu-cs-452/codespace-assignments/releases/download/v1.0/embeddings.zip",
-    },
-    
-    # Google Drive (original source - may have rate limits)
-    "gdrive": {
-        "raw_data": "1RXxlcUBHhE4_fQHU3qlX7Ghz5pBSvNrV",  # File ID
-        "embeddings": "1uCx21PhPtpnmy3ZpTc8MoR0vvokTYzrB",  # File ID
-    },
-}
-
-# Which source to use (change this if needed)
-ACTIVE_SOURCE = "github"  # Options: "github", "gdrive"
+# GitHub Release URLs
+RELEASE_BASE = "https://github.com/byu-cs-452/codespace-assignments/releases/download/v1.0"
+FILES = [
+    ("raw_data.zip", f"{RELEASE_BASE}/raw_data.zip", 30),       # ~30 MB
+    ("embeddings.zip", f"{RELEASE_BASE}/embeddings.zip", 585),  # ~585 MB
+]
 
 
-# =============================================================================
-# DOWNLOAD FUNCTIONS
-# =============================================================================
-
-def download_from_github(url: str, dest_path: Path) -> bool:
-    """Download a file from GitHub Releases."""
-    print(f"   Downloading from GitHub...")
-    
+def download_file(url: str, dest_path: Path, expected_mb: int) -> bool:
+    """Download a file with progress indicator."""
     try:
         response = requests.get(url, stream=True, allow_redirects=True)
         response.raise_for_status()
@@ -69,7 +40,8 @@ def download_from_github(url: str, dest_path: Path) -> bool:
                 downloaded += len(chunk)
                 if total_size:
                     pct = (downloaded / total_size) * 100
-                    print(f"\r   Progress: {pct:.1f}%", end="", flush=True)
+                    mb = downloaded / (1024 * 1024)
+                    print(f"\r   {mb:.1f} / {expected_mb} MB ({pct:.0f}%)", end="", flush=True)
         
         print()  # Newline after progress
         return True
@@ -79,54 +51,23 @@ def download_from_github(url: str, dest_path: Path) -> bool:
         return False
 
 
-def download_from_gdrive(file_id: str, dest_path: Path) -> bool:
-    """Download a file from Google Drive using gdown."""
-    print(f"   Downloading from Google Drive...")
-    
-    try:
-        import gdown
-        url = f"https://drive.google.com/uc?id={file_id}"
-        gdown.download(url, str(dest_path), quiet=False)
-        return dest_path.exists()
-        
-    except ImportError:
-        print("   ❌ gdown not installed. Run: pip install gdown")
-        return False
-    except Exception as e:
-        print(f"   ❌ Download failed: {e}")
-        return False
-
-
 def extract_zip(zip_path: Path, extract_to: Path) -> bool:
-    """Extract a zip file."""
-    print(f"   Extracting {zip_path.name}...")
-    
+    """Extract a zip file and clean up."""
+    print(f"   Extracting...")
     try:
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
             zip_ref.extractall(extract_to)
-        
-        # Clean up zip file
-        zip_path.unlink()
+        zip_path.unlink()  # Remove zip after extraction
         return True
-        
     except zipfile.BadZipFile:
-        print(f"   ❌ Invalid zip file: {zip_path}")
+        print(f"   ❌ Invalid zip file")
         return False
 
 
-def check_existing_data(data_dir: Path) -> bool:
-    """Check if data already exists."""
-    # Look for any .jsonl files
-    jsonl_files = list(data_dir.glob("**/*.jsonl"))
-    return len(jsonl_files) > 0
-
-
-# =============================================================================
-# MAIN
-# =============================================================================
-
 def main():
-    print("📥 Lex Fridman Podcast Embeddings Dataset")
+    print()
+    print("📥 Downloading Lex Fridman Podcast Embeddings")
+    print("   ~615 MB total, expect 1-3 minutes")
     print("=" * 50)
     print()
     
@@ -135,61 +76,36 @@ def main():
     data_dir = script_dir / "data"
     
     # Check if already downloaded
-    if check_existing_data(data_dir):
+    if data_dir.exists() and list(data_dir.glob("**/*.jsonl")):
         print("✅ Data already exists!")
         print(f"   Location: {data_dir}")
         print()
-        print("   To re-download, delete the data folder first:")
+        print("   To re-download, delete the data folder:")
         print(f"   rm -rf {data_dir}")
         return 0
     
     # Create data directory
     data_dir.mkdir(exist_ok=True)
     
-    # Get source configuration
-    source = DATA_SOURCES.get(ACTIVE_SOURCE)
-    if not source:
-        print(f"❌ Unknown data source: {ACTIVE_SOURCE}")
-        return 1
-    
-    print(f"📡 Source: {ACTIVE_SOURCE}")
-    print()
-    
-    # Download files
-    files_to_download = [
-        ("raw_data", "raw_data.zip"),
-        ("embeddings", "embeddings.zip"),
-    ]
-    
-    for key, filename in files_to_download:
-        print(f"📦 Downloading {filename}...")
+    # Download each file
+    for filename, url, expected_mb in FILES:
+        print(f"📦 {filename} ({expected_mb} MB)")
         dest_path = data_dir / filename
         
-        if ACTIVE_SOURCE == "github":
-            success = download_from_github(source[key], dest_path)
-        elif ACTIVE_SOURCE == "gdrive":
-            success = download_from_gdrive(source[key], dest_path)
-        else:
-            print(f"   ❌ Unknown source type: {ACTIVE_SOURCE}")
-            success = False
-        
-        if not success:
-            print(f"   ❌ Failed to download {filename}")
+        if not download_file(url, dest_path, expected_mb):
             return 1
         
-        # Extract
         if not extract_zip(dest_path, data_dir):
             return 1
         
-        print(f"   ✅ {filename} complete!")
+        print(f"   ✅ Done")
         print()
     
     # Verify
     jsonl_count = len(list(data_dir.glob("**/*.jsonl")))
     print("=" * 50)
     print(f"✅ Download complete!")
-    print(f"   Location: {data_dir}")
-    print(f"   Files: {jsonl_count} .jsonl files found")
+    print(f"   {jsonl_count} data files ready")
     print()
     print("Next steps:")
     print("   python db_build.py    # Create tables")
