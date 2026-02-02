@@ -1,5 +1,5 @@
 {
-    "name": "CS-452 Semantic Search Environment",
+    "name": "CS-452 Semantic Search",
     "dockerComposeFile": "../semantic-search/docker-compose.yml",
     "service": "app",
     "workspaceFolder": "/workspace",
@@ -9,12 +9,9 @@
                 "ms-python.python",
                 "ms-python.vscode-pylance",
                 "mtxr.sqltools",
-                "mtxr.sqltools-driver-pg",
-                "ms-toolsai.jupyter"
+                "mtxr.sqltools-driver-pg"
             ],
             "settings": {
-                "python.defaultInterpreterPath": "/workspace/.venv/bin/python",
-                "python.terminal.activateEnvironment": true,
                 "sqltools.connections": [
                     {
                         "name": "VectorDB",
@@ -29,9 +26,7 @@
             }
         }
     },
-    "postCreateCommand": "bash -c 'echo \"\" && echo \"╔══════════════════════════════════════════════════════════════╗\" && echo \"║                                                              ║\" && echo \"║   🎓 CS-452 Data Engineering - Codespace Environment        ║\" && echo \"║                                                              ║\" && echo \"║   Setting up your development environment...                 ║\" && echo \"║                                                              ║\" && echo \"╚══════════════════════════════════════════════════════════════╝\" && echo \"\" && echo \"📦 Creating Python virtual environment...\" && cd /workspace && python3 -m venv .venv && source .venv/bin/activate && echo \"📥 Installing dependencies...\" && pip install --upgrade pip -q && pip install -r semantic-search/requirements.txt -q && echo \"\" && echo \"╔══════════════════════════════════════════════════════════════╗\" && echo \"║  ✅ Environment Ready!                                       ║\" && echo \"╠══════════════════════════════════════════════════════════════╣\" && echo \"║                                                              ║\" && echo \"║  Your Codespace includes:                                    ║\" && echo \"║    • PostgreSQL 16 + pgvector (local, fast!)                 ║\" && echo \"║    • Python 3.11 with all dependencies                       ║\" && echo \"║    • SQLTools extension for DB browsing                      ║\" && echo \"║                                                              ║\" && echo \"║  Next steps:                                                 ║\" && echo \"║    1. source .venv/bin/activate                              ║\" && echo \"║    2. cd semantic-search                                     ║\" && echo \"║    3. ./download_data.sh                                     ║\" && echo \"║    4. python db_check.py                                     ║\" && echo \"║                                                              ║\" && echo \"╚══════════════════════════════════════════════════════════════╝\" && echo \"\"'",
     "forwardPorts": [
         5432
-    ],
-    "remoteUser": "vscode"
+    ]
 }
