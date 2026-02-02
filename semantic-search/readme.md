@@ -187,7 +187,7 @@ Submit a ZIP or PDF containing:
 
 ## Want to Learn More?
 
-📚 **[RELATED_LEARNING.md](./RELATED_LEARNING.md)** — Curious how this Codespace was built? Want to run locally instead? This guide covers:
+📚 **[related_learning.md](./related_learning.md)** — Curious how this Codespace was built? Want to run locally instead? This guide covers:
 
 - How the Codespace environment was created
 - Why local PostgreSQL is faster than cloud databases for this assignment
