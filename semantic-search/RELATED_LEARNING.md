@@ -138,9 +138,12 @@ We hardcode the connection details. In production:
 
 If you want to experience the full setup process—which we encourage!—here are your options:
 
-### Option 1: Local Docker
+### Option 1: Local Docker (Learn Container Basics)
 
-Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and run:
+This option teaches you how to run Docker containers locally—a fundamental DevOps skill.
+
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+2. Run the following commands:
 
 ```bash
 # Clone the repo
@@ -160,36 +163,41 @@ pip install -r requirements.txt
 python db_check.py
 ```
 
-This gives you the same setup as the Codespace, but running on your machine.
+This gives you the same setup as the Codespace, but running on your machine. You'll learn:
+- How `docker compose` orchestrates multiple containers
+- How to start/stop/inspect running containers
+- How containerized databases work
 
-### Option 2: Cloud Database (Real-World Experience)
+### Option 2: Cloud Database with TimescaleDB (Real-World Experience)
 
-Try setting up a managed database service. This is valuable hands-on experience:
+Try setting up a managed database service—this is valuable hands-on experience that mirrors real-world workflows.
 
-#### TimescaleDB
+> **Note**: This assignment's dataset is approximately **550MB**, which exceeds most free-forever tiers. TimescaleDB's 30-day trial provides enough storage for this assignment.
+
+#### Setting Up TimescaleDB
+
 1. Go to [timescale.com](https://www.timescale.com/) and create a free trial account
-2. Create a new service with **AI/ML** enabled (includes pgvector)
-3. Navigate through the setup wizard and note the connection details
-4. Update your code to use the connection string they provide
+2. Create a new service and select **AI/ML** (this includes pgvector)
+3. Navigate through the setup wizard—pay attention to:
+   - Region selection
+   - Instance configuration
+   - Connection security settings
+4. Copy your connection string from the dashboard
+5. Update `utils.py` to use your connection string instead of the local one
 
-#### Neon (Free Tier)
-1. Sign up at [neon.tech](https://neon.tech/)
-2. Create a project (free tier includes 512MB storage)
-3. Run `CREATE EXTENSION vector;` to enable pgvector
-4. Use their connection string in your code
+**What you'll learn:**
+- How database-as-a-service platforms work
+- Managing connection strings and credentials
+- Navigating cloud provider dashboards
+- Understanding instance sizing and configuration
 
-#### Supabase (Free Tier)
-1. Sign up at [supabase.com](https://supabase.com/)
-2. Create a project (free tier includes 500MB)
-3. pgvector is pre-installed; enable it in the SQL editor
-4. Find connection details in Settings → Database
+#### Other Cloud Options (For Future Reference)
 
-### Cloud Database Comparison
+These providers have free tiers but with storage limits below our dataset size (~550MB). They're great for smaller projects:
 
-| Service | Free Tier | pgvector | Good For |
-|---------|-----------|----------|----------|
-| [TimescaleDB](https://www.timescale.com/) | 30 days trial | ✅ Built-in | Time-series + vectors |
-| [Neon](https://neon.tech/) | 512MB forever | ✅ Yes | Serverless, branching |
+| Service | Free Tier | pgvector | Notes |
+|---------|-----------|----------|-------|
+| [Neon](https://neon.tech/) | 512MB forever | ✅ Yes | Great for smaller datasets, serverless |
 | [Supabase](https://supabase.com/) | 500MB forever | ✅ Yes | Full backend platform |
 | [Railway](https://railway.app/) | $5 credit | ⚠️ Manual | Quick deployments |
 
