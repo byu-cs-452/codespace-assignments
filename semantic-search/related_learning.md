@@ -1,217 +1,120 @@
-# Related Learning: How This Codespace Works
+# Related Learning: How This Environment Works
 
-This document explains how this GitHub Codespace environment was created and the technologies behind it. While we've simplified the setup for this assignment, **understanding these concepts is valuable for your career**—you may encounter them when building production systems or managing your own infrastructure.
-
-> 💡 **A Note from Your Instructor**: By using Codespaces, we've removed some "real-world" setup steps (creating cloud database accounts, managing connection strings, etc.). While this lets you focus on the core learning objectives, those skills *are* valuable. This document is here so you can still learn about what we've abstracted away—and explore these technologies on your own when you're ready.
+This document explains how this development environment was created and the technologies behind it. **Understanding these concepts is valuable for your career**—you'll encounter them when building production systems or managing your own infrastructure.
 
 ## Table of Contents
-- [What This Codespace Provides](#what-this-codespace-provides)
-- [How the Codespace Was Built](#how-the-codespace-was-built)
-- [What You're Missing (And Why It Matters)](#what-youre-missing-and-why-it-matters)
-- [Running Locally (The "Harder" Way)](#running-locally-the-harder-way)
+- [How Docker Compose Works](#how-docker-compose-works)
+- [What You're Learning](#what-youre-learning)
+- [Alternative: TimescaleDB Cloud](#alternative-timescaledb-cloud)
 - [Technologies Worth Learning](#technologies-worth-learning)
 - [Further Reading](#further-reading)
 
 ---
 
-## What This Codespace Provides
+## How Docker Compose Works
 
-When you create a Codespace from this repo, you get a fully configured environment:
+When you run `docker compose up -d db`, Docker creates a containerized PostgreSQL database with pgvector pre-installed.
 
 ### Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    GitHub Codespace                      │
-│  ┌───────────────────┐    ┌───────────────────────────┐ │
-│  │   app container   │    │      db container         │ │
-│  │                   │    │                           │ │
-│  │  • Python 3.11    │◄──►│  • PostgreSQL 16          │ │
-│  │  • VS Code Server │    │  • pgvector extension     │ │
-│  │  • Your code      │    │  • vectordb database      │ │
-│  │                   │    │                           │ │
-│  └───────────────────┘    └───────────────────────────┘ │
-│           localhost:5432 (internal network)              │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                    Your Machine                              │
+│                                                              │
+│   ┌─────────────────────┐    ┌─────────────────────────────┐│
+│   │  Python Environment │    │    Docker Container         ││
+│   │                     │    │                             ││
+│   │  • Your code        │◄──►│  • PostgreSQL 16            ││
+│   │  • psycopg2         │    │  • pgvector extension       ││
+│   │  • pandas           │    │  • vectordb database        ││
+│   │                     │    │                             ││
+│   └─────────────────────┘    └─────────────────────────────┘│
+│                localhost:5432                                │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### What's Pre-Configured
-
-| Component | What You Get |
-|-----------|--------------|
-| **PostgreSQL 16** | Database server with pgvector extension already installed |
-| **Python 3.11** | Virtual environment with all dependencies |
-| **VS Code Extensions** | Python, SQLTools (browse your database visually), Jupyter |
-| **Connection strings** | Automatically configured via environment variables |
-
----
-
-## How the Codespace Was Built
-
-The Codespace is defined by two configuration files. Understanding these is useful if you ever need to create reproducible development environments for your own projects or teams.
-
-### `.devcontainer/devcontainer.json`
-
-This file tells GitHub (and VS Code) how to configure the development container:
-
-```json
-{
-  "name": "CS-452 Semantic Search Environment",
-  "dockerComposeFile": "../semantic-search/docker-compose.yml",
-  "service": "app",
-  "workspaceFolder": "/workspace",
-  "customizations": {
-    "vscode": {
-      "extensions": ["ms-python.python", "mtxr.sqltools", ...]
-    }
-  },
-  "postCreateCommand": "python3 -m venv .venv && pip install -r requirements.txt"
-}
-```
-
-**Key concepts:**
-- **Dev Containers**: A specification for defining development environments as code
-- **postCreateCommand**: Runs once when the container is first created
-- **Extensions**: Automatically installed so everyone has the same tools
-
-### `semantic-search/docker-compose.yml`
-
-This defines the containers that run together:
+### docker-compose.yml Explained
 
 ```yaml
 services:
   db:
-    image: pgvector/pgvector:pg16    # PostgreSQL with pgvector
+    image: pgvector/pgvector:pg16    # PostgreSQL with pgvector pre-installed
     environment:
-      POSTGRES_DB: vectordb
-      POSTGRES_USER: student
+      POSTGRES_DB: vectordb           # Database name
+      POSTGRES_USER: student          # Username
       POSTGRES_PASSWORD: vector_lab_2024
-      
-  app:
-    image: mcr.microsoft.com/devcontainers/python:3.11
-    depends_on: [db]
+    ports:
+      - "5432:5432"                   # Expose to localhost
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persist data
 ```
 
 **Key concepts:**
-- **Docker Compose**: Orchestrates multiple containers that work together
-- **Health checks**: The app container waits for the database to be ready
-- **Volumes**: Database data persists even if containers restart
+- **Containers**: Isolated environments that package software with its dependencies
+- **Volumes**: Persistent storage that survives container restarts
+- **Port mapping**: Makes the container's port 5432 available on your machine
 
 ---
 
-## What You're Missing (And Why It Matters)
+## What You're Learning
 
-By using this Codespace, you skip several steps that are common in real-world development:
+By running Docker locally, you're gaining real-world skills:
 
-### 1. Setting Up a Cloud Database
+### 1. Container Basics
+- Starting/stopping containers: `docker compose up -d` / `docker compose down`
+- Viewing running containers: `docker ps`
+- Viewing logs: `docker compose logs db`
 
-In production, you'd typically:
-- **Choose a provider** (AWS RDS, Google Cloud SQL, TimescaleDB, Neon, Supabase)
-- **Configure instance size**, storage, backups, and security
-- **Manage connection strings** and secrets securely
-- **Set up networking** (VPCs, firewall rules, SSL certificates)
+### 2. Database Management
+- Connecting to PostgreSQL from Python
+- Using extensions like pgvector
+- Writing efficient bulk inserts
 
-**Why it matters**: Understanding database-as-a-service offerings is essential for most software engineering roles.
-
-### 2. Managing Python Environments
-
-We create the virtual environment for you, but in practice you'd need to:
-- **Choose a tool**: venv, conda, poetry, or uv
-- **Pin dependency versions** for reproducibility
-- **Handle conflicts** between packages
-- **Set up CI/CD** to test with consistent environments
-
-**Why it matters**: Environment management is a common source of bugs ("works on my machine").
-
-### 3. Configuring Connection Strings
-
-We hardcode the connection details. In production:
-- **Secrets are stored securely** (environment variables, secret managers)
-- **Different environments** (dev, staging, prod) have different credentials
-- **Connection pooling** is used for performance
-
-**Why it matters**: Credential management is a critical security skill.
+### 3. Python Environment Management
+- Virtual environments: `python -m venv .venv`
+- Dependency management: `pip install -r requirements.txt`
+- Isolation between projects
 
 ---
 
-## Running Locally (The "Harder" Way)
+## Alternative: TimescaleDB Cloud
 
-If you want to experience the full setup process—which we encourage!—here are your options:
+If you can't install Docker, you can use a managed database instead.
 
-### Option 1: Local Docker (Learn Container Basics)
-
-This option teaches you how to run Docker containers locally—a fundamental DevOps skill.
-
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-2. Run the following commands:
-
-```bash
-# Clone the repo
-git clone https://github.com/byu-cs-452/codespace-assignments.git
-cd codespace-assignments/semantic-search
-
-# Start PostgreSQL with pgvector
-docker compose up -d db
-
-# Create Python environment
-python3 -m venv .venv
-source .venv/bin/activate  # or .venv\Scripts\activate on Windows
-pip install -r requirements.txt
-
-# Run the assignment
-./download_data.sh
-python db_check.py
-```
-
-This gives you the same setup as the Codespace, but running on your machine. You'll learn:
-- How `docker compose` orchestrates multiple containers
-- How to start/stop/inspect running containers
-- How containerized databases work
-
-### Option 2: Cloud Database with TimescaleDB (Real-World Experience)
-
-Try setting up a managed database service—this is valuable hands-on experience that mirrors real-world workflows.
-
-> **Note**: This assignment's dataset is approximately **550MB**, which exceeds most free-forever tiers. TimescaleDB's 30-day trial provides enough storage for this assignment.
-
-#### Setting Up TimescaleDB
+### Setting Up TimescaleDB
 
 1. Go to [timescale.com](https://www.timescale.com/) and create a free trial account
-2. Create a new service and select **AI/ML** (this includes pgvector)
+2. Create a new service and select **AI/ML** (includes pgvector)
 3. Navigate through the setup wizard—pay attention to:
    - Region selection
    - Instance configuration
    - Connection security settings
 4. Copy your connection string from the dashboard
-5. Update `utils.py` to use your connection string instead of the local one
+5. Update `utils.py` to use your connection string
 
 **What you'll learn:**
 - How database-as-a-service platforms work
 - Managing connection strings and credentials
 - Navigating cloud provider dashboards
-- Understanding instance sizing and configuration
 
-#### Other Cloud Options (For Future Reference)
+### Other Cloud Options (For Reference)
 
-These providers have free tiers but with storage limits below our dataset size (~550MB). They're great for smaller projects:
+These providers have smaller free tiers (our dataset is ~550MB):
 
 | Service | Free Tier | pgvector | Notes |
 |---------|-----------|----------|-------|
-| [Neon](https://neon.tech/) | 512MB forever | ✅ Yes | Great for smaller datasets, serverless |
+| [Neon](https://neon.tech/) | 512MB forever | ✅ Yes | Great for smaller datasets |
 | [Supabase](https://supabase.com/) | 500MB forever | ✅ Yes | Full backend platform |
-| [Railway](https://railway.app/) | $5 credit | ⚠️ Manual | Quick deployments |
 
 ---
 
 ## Technologies Worth Learning
 
-These tools are worth exploring for your career:
-
 ### Python Environment Management
 
 #### uv — The Fast Python Package Manager
 
-[uv](https://github.com/astral-sh/uv) is a blazing-fast Python package manager written in Rust. It's becoming increasingly popular:
+[uv](https://github.com/astral-sh/uv) is a blazing-fast Python package manager written in Rust:
 
 ```bash
 # Install uv
@@ -219,7 +122,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh  # macOS/Linux
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"  # Windows
 
 # Use uv instead of pip
-uv venv                          # Create virtual environment
+uv venv                              # Create virtual environment
 uv pip install -r requirements.txt   # Install packages (very fast!)
 ```
 
@@ -242,7 +145,7 @@ poetry shell             # Activate environment
 
 - **Docker Compose**: What we use here—good for development and small deployments
 - **Kubernetes**: Industry standard for production container orchestration
-- **Dev Containers**: The standard we use for Codespaces—works in VS Code too
+- **Docker Swarm**: Simpler alternative to Kubernetes
 
 ### Database Technologies
 
@@ -259,10 +162,10 @@ poetry shell             # Activate environment
 - [OpenAI Embeddings Guide](https://platform.openai.com/docs/guides/embeddings) — Creating embeddings
 - [Vector Database Comparison](https://www.pinecone.io/learn/vector-database/) — When to use what
 
-### Development Environments
-- [Dev Containers Specification](https://containers.dev/) — The standard we use
-- [GitHub Codespaces Docs](https://docs.github.com/en/codespaces) — Deep dive into Codespaces
-- [Docker Compose Docs](https://docs.docker.com/compose/) — Container orchestration
+### Docker & Containers
+- [Docker Getting Started](https://docs.docker.com/get-started/) — Official tutorial
+- [Docker Compose Documentation](https://docs.docker.com/compose/) — Multi-container apps
+- [Docker Hub](https://hub.docker.com/) — Find pre-built images
 
 ### Python Tools
 - [uv Documentation](https://github.com/astral-sh/uv) — Fast package management

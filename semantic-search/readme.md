@@ -4,41 +4,47 @@ Build a podcast recommender system using **pgvector** and semantic search! You'l
 
 ## Learning Objectives
 
-In this assignment, you'll learn to:
 - Perform ETL (Extract, Transform, Load) on a 500MB dataset
-- Store data in a Postgres database with pgvector extension
+- Store data in PostgreSQL with the pgvector extension
 - Implement semantic search using vector embeddings
+- Write SQL queries with vector distance operators
 
 ## Quick Start
 
-### 1. Fork and Open in Codespace
-
-1. **Fork this repository** to your GitHub account
-2. Click the green **"Code"** button → **"Codespaces"** → **"Create codespace on main"**
-3. Wait ~2-3 minutes for the environment to build
-
-### 2. Activate the Virtual Environment
-
-```bash
-source .venv/bin/activate
-```
-
-### 3. Download the Dataset
+### 1. Start the Database
 
 ```bash
 cd semantic-search
-python download_data.py
+docker compose up -d db
 ```
 
-This downloads ~550MB of podcast data and embeddings.
+First run pulls the PostgreSQL + pgvector image (~200MB, takes ~1-2 min).
 
-### 4. Verify Database Connection
+### 2. Set Up Python Environment
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### 3. Verify Setup
 
 ```bash
 python db_check.py
 ```
 
 You should see: `✨ All checks passed! Your environment is ready.`
+
+### 4. Download the Dataset
+
+```bash
+python download_data.py
+```
+
+Downloads ~615MB of podcast data and embeddings (~1-3 min).
+
+---
 
 ## Assignment Tasks
 
@@ -53,6 +59,8 @@ Write SQL statements to create:
 ```bash
 python db_build.py
 ```
+
+**Tip:** If you need to start over, use the `drop_tables()` function.
 
 ### Step 2: `db_insert.py` - Load Data
 
@@ -80,6 +88,8 @@ Write queries to answer:
 ```bash
 python db_query.py
 ```
+
+---
 
 ## Database Schema
 
@@ -111,18 +121,18 @@ embedding <=> other_embedding  -- cosine distance
 embedding <+> other_embedding  -- L1 distance
 ```
 
+---
+
 ## Data Files
 
 After running `download_data.py`, you'll have:
 
 ```
 data/
-├── batch_request_00.jsonl  # Podcast text + metadata
-├── batch_request_01.jsonl
-├── ...
-├── embedding_00.jsonl      # 128-dim embeddings
-├── embedding_01.jsonl
-└── ...
+├── documents/
+│   ├── batch_request_*.jsonl  # Podcast text + metadata
+├── embedding/
+│   ├── *.jsonl                # 128-dim embeddings
 ```
 
 ### Sample `batch_request` document:
@@ -153,9 +163,9 @@ data/
 }
 ```
 
-## Database Connection
+---
 
-The Codespace includes a local PostgreSQL instance with pgvector. Connection details:
+## Database Connection
 
 | Property | Value |
 |----------|-------|
@@ -166,6 +176,8 @@ The Codespace includes a local PostgreSQL instance with pgvector. Connection det
 | Password | `vector_lab_2024` |
 
 The `utils.py` file provides helper functions to connect automatically.
+
+---
 
 ## Files Overview
 
@@ -178,19 +190,21 @@ The `utils.py` file provides helper functions to connect automatically.
 | `db_check.py` | Verify environment setup |
 | `download_data.py` | Download dataset |
 
+---
+
 ## Deliverables
 
 Submit a ZIP or PDF containing:
 1. Your completed code files (`db_build.py`, `db_insert.py`, `db_query.py`)
 2. A PDF with the queries and results for Q1-Q6
 
+---
+
 ## Want to Learn More?
 
-📚 **[related_learning.md](./related_learning.md)** — Curious how this Codespace was built? Want to run locally instead? This guide covers:
-
-- How the Codespace environment was created
-- Why local PostgreSQL is faster than cloud databases for this assignment
-- Setting up locally with Docker, TimescaleDB, or Neon
+📚 **[related_learning.md](./related_learning.md)** covers:
+- How Docker Compose orchestrates the database
+- Setting up with TimescaleDB cloud instead
 - Using **uv** for fast Python environment management
 - Links to pgvector, PostgreSQL, and DevOps resources
 
@@ -201,19 +215,26 @@ Submit a ZIP or PDF containing:
 - [pgvector Documentation](https://github.com/pgvector/pgvector)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 - [psycopg2 Documentation](https://www.psycopg.org/docs/)
-- [Lex Fridman Podcast Dataset (HuggingFace)](https://huggingface.co/datasets/Whispering-GPT/lex-fridman-podcast)
+- [Docker Compose Documentation](https://docs.docker.com/compose/)
+
+---
 
 ## Troubleshooting
+
+### "Docker daemon not running"
+Start Docker Desktop and wait for it to fully load.
 
 ### "Data directory not found"
 Run `python download_data.py` to download the dataset.
 
 ### Database won't connect
 ```bash
-# Check if containers are running
+# Check if container is running
 docker ps
 
-# Rebuild if needed (Ctrl+Shift+P → "Rebuild Container")
+# Restart container
+docker compose down
+docker compose up -d db
 ```
 
 ### Virtual environment issues
