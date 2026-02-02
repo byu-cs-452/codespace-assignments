@@ -45,7 +45,7 @@ DATA_SOURCES = {
 }
 
 # Which source to use (change this if needed)
-ACTIVE_SOURCE = "gdrive"  # Options: "github", "gdrive"
+ACTIVE_SOURCE = "github"  # Options: "github", "gdrive"
 
 
 # =============================================================================
