@@ -9,18 +9,29 @@ Build a podcast recommender system using **pgvector** and semantic search! You'l
 - Implement semantic search using vector embeddings
 - Write SQL queries with vector distance operators
 
-## Quick Start
+## Quick Start (5 minutes)
 
-### 1. Start the Database
+### 1. Get a Database Connection String
 
-```bash
-cd semantic-search
-docker compose up -d db
+Choose ONE option:
+
+**Option A: Docker (Local)** — Learn containerization
+- See [DOCKER_SETUP.md](./DOCKER_SETUP.md)
+- You'll get: `postgresql://student:vector_lab_2024@localhost:5432/vectordb`
+
+**Option B: TimescaleDB Cloud** — Simpler setup, no installation needed
+- See [TIMESCALEDB_SETUP.md](./TIMESCALEDB_SETUP.md)
+- You'll get: `postgresql://user:password@xyz.timescale.cloud:5432/tsdb`
+
+### 2. Update utils.py
+
+Open `utils.py` and paste your connection string:
+
+```python
+CONNECTION = "your_connection_string_here"
 ```
 
-First run pulls the PostgreSQL + pgvector image (~200MB, takes ~1-2 min).
-
-### 2. Set Up Python Environment
+### 3. Set Up Python
 
 ```bash
 python3 -m venv .venv
@@ -28,7 +39,7 @@ source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 3. Verify Setup
+### 4. Verify Setup
 
 ```bash
 python db_check.py
@@ -36,7 +47,7 @@ python db_check.py
 
 You should see: `✨ All checks passed! Your environment is ready.`
 
-### 4. Download the Dataset
+### 5. Download the Dataset
 
 ```bash
 python download_data.py
@@ -221,28 +232,34 @@ Submit a ZIP or PDF containing:
 
 ## Troubleshooting
 
-### "Docker daemon not running"
-Start Docker Desktop and wait for it to fully load.
+### "Connection refused" or can't connect to database
+
+**If using Docker:**
+- Make sure Docker is running and container is healthy: `docker ps`
+- See [DOCKER_SETUP.md](./DOCKER_SETUP.md) for troubleshooting
+
+**If using TimescaleDB:**
+- Check you pasted the entire connection string correctly into config.json
+- Make sure your service is running in the TimescaleDB dashboard
+- See [TIMESCALEDB_SETUP.md](./TIMESCALEDB_SETUP.md) for troubleshooting
 
 ### "Data directory not found"
+
 Run `python download_data.py` to download the dataset.
 
-### Database won't connect
-```bash
-# Check if container is running
-docker ps
-
-# Restart container
-docker compose down
-docker compose up -d db
-```
-
 ### Virtual environment issues
+
 ```bash
 rm -rf .venv
 python3 -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+```
+
+### psycopg2 won't install on Windows
+
+```bash
+pip install psycopg2-binary  # Use the pre-built binary
 ```
 
 ---

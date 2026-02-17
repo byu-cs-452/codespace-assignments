@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
 """
-db_check.py - Verify that the Codespace environment is correctly configured.
+db_check.py - Verify that your database setup is correct.
 
 This script checks:
-1. Database connection works
+1. Database connection works (Docker or TimescaleDB)
 2. pgvector extension is available
 3. Vector operations function correctly
 
-Run this after creating your Codespace to verify everything is working.
+Run this after setting up your database to verify everything is working.
+
+Works with both setup paths:
+  - Docker (local): Run after `docker compose up -d db`
+  - TimescaleDB Cloud: Run after configuring utils.py
 
 Usage:
     python db_check.py

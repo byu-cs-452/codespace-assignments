@@ -1,39 +1,50 @@
+# Docker Compose Configuration for Semantic Search Lab
+#
+# This file sets up a local PostgreSQL database with pgvector for vector similarity search.
+# 
+# USAGE:
+#   docker compose up -d db      Start the database
+#   docker compose down           Stop the database
+#   docker ps                     Check if container is running
+#   docker compose logs db        View database logs
+#
+# ALTERNATIVE: If you prefer not to use Docker, use TimescaleDB Cloud instead:
+#   1. Sign up at timescale.com
+#   2. Create a service with "AI/ML" region (includes pgvector)
+#   3. Update utils.py with your connection string
+#   4. Skip this docker-compose.yml entirely
+#
+# The environment variables (DB_HOST, DB_USER, DB_PASSWORD) can be overridden
+# in utils.py if using a different database provider.
+
 version: '3.8'
 
 services:
+  # PostgreSQL 16 with pgvector extension for vector embeddings
   db:
     image: pgvector/pgvector:pg16
     container_name: vectordb
+    
+    # Database credentials - change if needed
     environment:
       POSTGRES_USER: student
       POSTGRES_PASSWORD: vector_lab_2024
       POSTGRES_DB: vectordb
+    
+    # Expose port 5432 so Python scripts can connect from localhost
     ports:
       - "5432:5432"
+    
+    # Persistent storage: data survives container restarts
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    
+    # Health check ensures database is ready before proceeding
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U student -d vectordb" ]
       interval: 10s
       timeout: 5s
       retries: 5
-
-  app:
-    image: mcr.microsoft.com/devcontainers/python:3.11
-    container_name: app
-    volumes:
-      - ..:/workspace:cached
-    command: sleep infinity
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      # Database connection for Python scripts
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_NAME: vectordb
-      DB_USER: student
-      DB_PASSWORD: vector_lab_2024
 
 volumes:
   postgres_data:

@@ -1,0 +1,7 @@
+{
+  "database": {
+    "connection_string": "postgresql://student:vector_lab_2024@localhost:5432/vectordb",
+    "note": "Replace with your database connection string. See DOCKER_SETUP.md or TIMESCALEDB_SETUP.md for how to get one."
+  }
+}
+

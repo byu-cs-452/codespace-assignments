@@ -1,0 +1,46 @@
+{
+  "timestamp": "2026-02-02T17:13:58.322214",
+  "num_trials": 10,
+  "files_tested": [
+    [
+      "raw_data.zip",
+      30,
+      "https://github.com/byu-cs-452/byu-cs-452-class-content/releases/download/v1.0-lex-fridman-dataset/raw_data.zip"
+    ],
+    [
+      "embeddings.zip",
+      558,
+      "https://github.com/byu-cs-452/byu-cs-452-class-content/releases/download/v1.0-lex-fridman-dataset/embeddings.zip"
+    ]
+  ],
+  "github": {
+    "raw_data.zip": {
+      "success_rate": "10/10",
+      "avg_time": 2.11,
+      "median_time": 1.77,
+      "min_time": 1.58,
+      "max_time": 3.5,
+      "failures": 0
+    },
+    "embeddings.zip": {
+      "success_rate": "10/10",
+      "avg_time": 23.82,
+      "median_time": 23.11,
+      "min_time": 19.42,
+      "max_time": 31.08,
+      "failures": 0
+    }
+  },
+  "kaggle": {
+    "available": true,
+    "reason": null,
+    "results": {
+      "success_rate": "10/10",
+      "avg_time": 25.26,
+      "median_time": 24.42,
+      "min_time": 22.22,
+      "max_time": 29.65,
+      "failures": 0
+    }
+  }
+}

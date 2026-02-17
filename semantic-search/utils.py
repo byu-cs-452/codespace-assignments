@@ -1,26 +1,32 @@
 """
 Utility functions for the semantic search assignment.
+
+To get started:
+1. Follow DOCKER_SETUP.md or TIMESCALEDB_SETUP.md to get a connection string
+2. Paste your connection string into the CONNECTION variable below
+3. Run: python db_check.py
 """
 
-import os
 import io
 import pandas as pd
 import psycopg2
-from typing import List, Optional
+from typing import List
+
+# ============================================================================
+# EDIT THIS: Paste your database connection string here
+# ============================================================================
+# Docker example:
+#   postgresql://student:vector_lab_2024@localhost:5432/vectordb
+#
+# TimescaleDB example:
+#   postgresql://user:password@xyz.timescale.cloud:5432/tsdb
+#
+CONNECTION = "postgresql://student:vector_lab_2024@localhost:5432/vectordb"
 
 
 def get_connection_string() -> str:
-    """
-    Get the database connection string from environment variables.
-    In Codespaces, these are set automatically by docker-compose.
-    """
-    host = os.getenv("DB_HOST", "localhost")
-    port = os.getenv("DB_PORT", "5432")
-    dbname = os.getenv("DB_NAME", "vectordb")
-    user = os.getenv("DB_USER", "student")
-    password = os.getenv("DB_PASSWORD", "vector_lab_2024")
-    
-    return f"host={host} port={port} dbname={dbname} user={user} password={password}"
+    """Return the database connection string."""
+    return CONNECTION
 
 
 def get_connection() -> psycopg2.extensions.connection:

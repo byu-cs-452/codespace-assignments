@@ -18,7 +18,7 @@ import requests
 from pathlib import Path
 
 # GitHub Release URLs
-RELEASE_BASE = "https://github.com/byu-cs-452/codespace-assignments/releases/download/v1.0"
+RELEASE_BASE = "https://github.com/byu-cs-452/byu-cs-452-class-content/releases/download/v1.0-lex-fridman-dataset"
 FILES = [
     ("raw_data.zip", f"{RELEASE_BASE}/raw_data.zip", 30),       # ~30 MB
     ("embeddings.zip", f"{RELEASE_BASE}/embeddings.zip", 585),  # ~585 MB
